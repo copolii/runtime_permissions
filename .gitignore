@@ -1,0 +1,76 @@
+# Local ignores #
+#################
+inlined_*
+
+# Build generated files #
+#########################
+res/raw/version
+compile-libs
+.gradle
+build
+
+# Android files #
+#################
+local.properties
+project.properties
+lint.xml
+
+# IntelliJ IDEA files #
+#######################
+.idea
+*.iml
+
+# Eclipse files #
+#################
+.project
+.classpath
+.factorypath
+.settings
+.apt_generated
+.externalToolBuilders
+.pmd
+gen
+
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+*~
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+thumbs.db
+
+# git crap #
+############
+*.orig
+
+gradle

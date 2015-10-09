@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="_base_Theme">
+        <item name="android:listViewStyle">@style/ListView</item>
+        <item name="android:textColorPrimary">@color/primaryText</item>
+        <item name="android:textColorSecondary">@color/secondaryText</item>
+        <item name="android:textColorPrimaryInverse">@color/primaryTextInverse</item>
+        <item name="android:textColorSecondaryInverse">@color/secondaryTextInverse</item>
+    </style>
+
+    <style name="_base_Theme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Materiyolo -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <!-- Toolbar -->
+        <item name="actionBarTheme">@style/toolbar_theme</item>
+        <item name="popupTheme">@style/toolbar_popup_theme</item>
+        <item name="drawerArrowStyle">@style/drawer_arrow</item>
+        <!-- Actionbar -->
+        <item name="actionBarDivider">@color/divider</item>
+        <!-- Contextual Actionbar -->
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeBackground">@color/colorAccent</item>
+        <item name="actionModeStyle">@style/actionmode_style</item>
+    </style>
+
+    <style name="toolbar_style">
+        <item name="android:minHeight">?attr/actionBarSize</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">?attr/colorPrimary</item>
+    </style>
+
+    <style name="toolbar_theme" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <style name="toolbar_popup_theme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColorPrimary">@color/primaryText</item>
+    </style>
+
+    <style name="drawer_arrow" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@color/icons</item>
+    </style>
+
+    <style name="actionmode_style" parent="Widget.AppCompat.Light.ActionMode.Inverse">
+        <item name="titleTextStyle">@style/actionmode_title_style</item>
+        <item name="subtitleTextStyle">@style/actionmode_subtitle_style</item>
+    </style>
+
+    <style name="actionmode_title_style" parent="TextAppearance.AppCompat.Widget.ActionMode.Title">
+        <item name="android:textColor">@color/primaryTextInverse</item>
+    </style>
+
+    <style name="actionmode_subtitle_style" parent="TextAppearance.AppCompat.Widget.ActionMode.Subtitle">
+        <item name="android:textColor">@color/secondaryTextInverse</item>
+    </style>
+
+</resources>
