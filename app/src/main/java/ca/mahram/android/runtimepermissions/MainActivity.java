@@ -1,21 +1,36 @@
 package ca.mahram.android.runtimepermissions;
 
+import android.Manifest;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -25,15 +40,22 @@ import butterknife.ButterKnife;
  */
 public class MainActivity
   extends AppCompatActivity
-  implements LoaderManager.LoaderCallbacks<Cursor> {
+  implements LoaderManager.LoaderCallbacks<Cursor>, DialogInterface.OnClickListener,
+             ActivityCompat.OnRequestPermissionsResultCallback {
 
-    private static final int CONTACTS_LOADER = 1;
+    private static final String LOGTAG = "CONTACTIVITY";
+
+    private static final int CONTACTS_LOADER       = 1;
+    private static final int PERM_REQUEST_CONTACTS = 1;
+    private static final int REQUEST_SETTINGS = 1;
 
     @Bind (android.R.id.list) RecyclerView list;
 
     private final List<String> names = new ArrayList<> ();
 
     private ContactsAdapter adapter;
+
+    private AlertDialog dialog;
 
     @Override protected void onCreate (final Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
@@ -44,8 +66,137 @@ public class MainActivity
 
         adapter = new ContactsAdapter ();
         list.setAdapter (adapter);
+        checkContactsReadPermission ();
+    }
 
+    @Override protected void onPause () {
+        if (null != dialog) {
+            dialog.dismiss ();
+            dialog = null;
+        }
+
+        super.onPause ();
+    }
+
+    private void checkContactsReadPermission () {
+        Toast.makeText (this, R.string.checking_permission, Toast.LENGTH_SHORT).show ();
+        // check for contacts permission
+        if (PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission (this,
+                                                                                    Manifest.permission
+                                                                                      .READ_CONTACTS)) {
+            Log.d (LOGTAG, "Permission already granted");
+            onContactsPermissionGranted ();
+        } else if (ActivityCompat.shouldShowRequestPermissionRationale (this, Manifest.permission.READ_CONTACTS)) {
+            Log.d (LOGTAG, "Permission not granted, show rationale dialog");
+            showPermissionRationaleDialog ();
+        } else {
+            Log.d (LOGTAG, "Permission not granted, don't show rationale dialog");
+            requestReadContactsPermission ();
+        }
+    }
+
+    private void showPermissionRationaleDialog () {
+        Log.d (LOGTAG, "showing permission rationale dialog");
+        dialog = new AlertDialog.Builder (this)
+                   .setTitle (R.string.contacts_access)
+                   .setMessage (R.string.contacts_permission_rationale)
+                   .setPositiveButton (R.string.your_contacts, this)
+                   .setNegativeButton (R.string.no_way, this)
+                   .setCancelable (false)
+                   .create ();
+        dialog.show ();
+    }
+
+    private void requestReadContactsPermission () {
+        Toast.makeText (this, R.string.requesting_permission, Toast.LENGTH_SHORT).show ();
+        Log.d (LOGTAG, "Requesting permission");
+        ActivityCompat.requestPermissions (this,
+                                           new String[] {Manifest.permission.READ_CONTACTS},
+                                           PERM_REQUEST_CONTACTS);
+    }
+
+    private void onContactsPermissionGranted () {
+        Toast.makeText (this, R.string.permission_granted, Toast.LENGTH_SHORT).show ();
+        Log.d (LOGTAG, "Permission granted. Initializing loader.");
         getSupportLoaderManager ().initLoader (CONTACTS_LOADER, null, this);
+    }
+
+    private void onContactsPermissionDenied () {
+        Toast.makeText (this, R.string.permission_denied, Toast.LENGTH_SHORT).show ();
+        Log.d (LOGTAG, "Permission denied. Bailing.");
+
+        final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener () {
+            @Override public void onClick (final DialogInterface dialog, final int which) {
+                if (which != DialogInterface.BUTTON_NEUTRAL) {
+                    finish ();
+                    return;
+                }
+
+                gotoSettings ();
+            }
+        };
+
+        dialog = new AlertDialog.Builder (this)
+                   .setTitle (R.string.no_soup)
+                   .setMessage (R.string.contacts_permission_denied)
+                   .setPositiveButton (android.R.string.ok, listener)
+                   .setNeutralButton (R.string.change, listener)
+                   .setCancelable (true)
+                   .setOnCancelListener (new DialogInterface.OnCancelListener () {
+                       @Override public void onCancel (final DialogInterface dialog) {
+                           finish ();
+                       }
+                   })
+                   .create ();
+        dialog.show ();
+    }
+
+    private void gotoSettings () {
+        final Intent intent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+            intent = new Intent (Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                 Uri.fromParts ("package", getPackageName (), null));
+        } else {
+            intent = new Intent (Intent.ACTION_VIEW);
+            intent.setClassName ("com.android.settings", "com.android.settings.InstalledAppDetails");
+            intent.putExtra (Build.VERSION.SDK_INT == Build.VERSION_CODES.FROYO
+                             ? "pkg"
+                             : "com.android.settings.ApplicationPkgName"
+                              , getPackageName ());
+        }
+
+        startActivityForResult (intent, REQUEST_SETTINGS);
+    }
+
+    @Override protected void onActivityResult (final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult (requestCode, resultCode, data);
+
+        if (requestCode != REQUEST_SETTINGS) return;
+
+        Log.d(LOGTAG, "Returned from settings with result " + resultCode);
+        checkContactsReadPermission ();
+    }
+
+    @Override
+    public void onRequestPermissionsResult (final int requestCode,
+                                            @NonNull final String[] permissions,
+                                            @NonNull final int[] grantResults) {
+        super.onRequestPermissionsResult (requestCode, permissions, grantResults);
+
+        Log.d (LOGTAG,
+               String.format (Locale.ENGLISH,
+                              "Request permission result for request %d.\nPermissions: %s.\nResults: %s",
+                              requestCode,
+                              Arrays.toString (permissions),
+                              Arrays.toString (grantResults)));
+
+        if (requestCode != PERM_REQUEST_CONTACTS)
+            return;
+
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            onContactsPermissionGranted ();
+        else
+            onContactsPermissionDenied ();
     }
 
     @Override public Loader<Cursor> onCreateLoader (final int id, final Bundle args) {
@@ -80,6 +231,14 @@ public class MainActivity
             throw new IllegalArgumentException ("Unknown loader id: " + loader.getId ());
 
         names.clear ();
+    }
+
+    @Override public void onClick (final DialogInterface dialog, final int which) {
+        if (DialogInterface.BUTTON_POSITIVE == which) {
+            requestReadContactsPermission ();
+        } else { // denied
+            onContactsPermissionDenied ();
+        }
     }
 
     private class ContactsAdapter
