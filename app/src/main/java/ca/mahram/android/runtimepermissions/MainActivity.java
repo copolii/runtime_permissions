@@ -20,6 +20,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,7 +48,7 @@ public class MainActivity
 
     private static final int CONTACTS_LOADER       = 1;
     private static final int PERM_REQUEST_CONTACTS = 1;
-    private static final int REQUEST_SETTINGS = 1;
+    private static final int REQUEST_SETTINGS      = 1;
 
     @Bind (android.R.id.list) RecyclerView list;
 
@@ -171,9 +172,10 @@ public class MainActivity
     @Override protected void onActivityResult (final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult (requestCode, resultCode, data);
 
-        if (requestCode != REQUEST_SETTINGS) return;
+        if (requestCode != REQUEST_SETTINGS)
+            return;
 
-        Log.d(LOGTAG, "Returned from settings with result " + resultCode);
+        Log.d (LOGTAG, "Returned from settings with result " + resultCode);
         checkContactsReadPermission ();
     }
 
@@ -219,7 +221,12 @@ public class MainActivity
 
         if (data.moveToFirst ()) {
             do {
-                names.add (data.getString (1));
+                final String name = data.getString (1);
+
+                if (TextUtils.isEmpty (name))
+                    continue;
+
+                names.add (name);
             } while (data.moveToNext ());
         }
 
