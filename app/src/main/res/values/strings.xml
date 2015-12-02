@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Runtime Permissions</string>
+    <string name="app_name">M Runtime Permissions</string>
     <string name="contacts_access">Contacts Access</string>
     <string name="contacts_permission_rationale">I need to read your contacts so that I can send them to my server and get a pretty penny for all them phone numbers, yo!</string>
     <string name="your_contacts">Yours!</string>
