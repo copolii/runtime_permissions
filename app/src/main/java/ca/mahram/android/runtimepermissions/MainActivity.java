@@ -3,16 +3,22 @@ package ca.mahram.android.runtimepermissions;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +34,7 @@ public class MainActivity
   implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int CONTACTS_LOADER = 1;
+    private static final String DANGER_FRAGMENT = "danger";
 
     @Bind (android.R.id.list) RecyclerView list;
 
@@ -99,6 +106,40 @@ public class MainActivity
         @Override public int getItemCount () {
             return names.size ();
         }
+    }
+
+    @Override public boolean onCreateOptionsMenu (final Menu menu) {
+        super.onCreateOptionsMenu (menu);
+
+        final MenuItem record = menu.add (0, R.id.action_danger, 0, R.string.dangerous_action)
+                                    .setIcon (R.drawable.ic_action_lock);
+
+        MenuItemCompat.setShowAsAction (record, MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
+
+        return true;
+    }
+
+    @Override public boolean onOptionsItemSelected (final MenuItem item) {
+        if (item.getItemId () != R.id.action_danger)
+            return super.onOptionsItemSelected (item);
+
+        doSomethingDangerous ();
+        return true;
+    }
+
+    private void doSomethingDangerous () {
+        final FragmentManager fm = getSupportFragmentManager ();
+
+        if (fm.findFragmentByTag (DANGER_FRAGMENT) != null)
+            return;
+
+        // show the fragment
+        Toast.makeText (this, "Danger! Danger!", Toast.LENGTH_SHORT).show ();
+
+        final FragmentTransaction ft = fm.beginTransaction ();
+        ft.add (android.R.id.custom, new DangerousFragment (), DANGER_FRAGMENT);
+        ft.addToBackStack (DANGER_FRAGMENT);
+        ft.commit ();
     }
 
     static class Holder
