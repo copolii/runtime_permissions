@@ -1,0 +1,72 @@
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:elevation="5dp"
+    app:cardCornerRadius="4dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white_ish"
+        tools:context="ca.mahram.android.runtimepermissions.DangerousFragment"
+        tools:ignore="UnusedAttribute">
+
+        <TextView
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:gravity="center"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:text="@string/dangerous_info"
+            />
+
+        <TableRow android:padding="5dp">
+
+            <TextView
+                android:text="@string/phone"
+                android:textStyle="bold"
+                android:layout_weight="0"/>
+
+            <TextView
+                android:id="@+id/last_call_number"
+                android:layout_weight="1"
+                tools:text="+15555551212"
+                android:text="@string/loading"
+                android:layout_marginLeft="5dp"/>
+        </TableRow>
+
+        <TableRow android:padding="5dp">
+
+            <TextView
+                android:text="@string/latitude"
+                android:textStyle="bold"
+                android:layout_weight="0"/>
+
+            <TextView
+                android:id="@+id/latitude"
+                android:layout_weight="1"
+                tools:text="0"
+                android:text="@string/loading"
+                android:layout_marginLeft="5dp"/>
+        </TableRow>
+
+        <TableRow android:padding="5dp">
+
+            <TextView
+                android:text="@string/longitude"
+                android:textStyle="bold"
+                android:layout_weight="0"/>
+
+            <TextView
+                android:id="@+id/longitude"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:text="@string/loading"
+                tools:text="0"
+                android:layout_marginLeft="5dp"/>
+        </TableRow>
+    </TableLayout>
+</android.support.v7.widget.CardView>

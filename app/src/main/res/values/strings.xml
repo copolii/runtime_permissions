@@ -11,4 +11,12 @@
     <string name="permission_granted">Permission granted</string>
     <string name="permission_denied">Permission denied</string>
     <string name="change">Change</string>
+    <string name="dangerous_action">Dangerous Action</string>
+    <string name="phone">Phone</string>
+    <string name="dangerous_info">Dangerous Info</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="loading">Loading…</string>
+    <string name="failed">Failed!</string>
+    <string name="denied">Denied!</string>
 </resources>

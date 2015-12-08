@@ -10,4 +10,5 @@
     <color name="secondaryTextInverse">#8D8D8D</color>
     <color name="icons">#FFFFFF</color>
     <color name="divider">#B6B6B6</color>
+    <color name="white_ish">#DDFFDD</color>
 </resources>
