@@ -19,4 +19,10 @@
     <string name="loading">Loading…</string>
     <string name="failed">Failed!</string>
     <string name="denied">Denied!</string>
+    <string name="call_log_rationale">Every call you take</string>
+    <string name="ill_be_watching_you">I\'ll be watching you!</string>
+    <string name="location_rationale">Every step you take</string>
+    <string name="multi_rationale_dialog_title">Every move you make</string>
+    <string name="creepy">Creepy!</string>
+    <string name="call_log_empty">No calls found</string>
 </resources>

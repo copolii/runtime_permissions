@@ -300,8 +300,6 @@ public class MainActivity
             return;
 
         // show the fragment
-        Toast.makeText (this, "Danger! Danger!", Toast.LENGTH_SHORT).show ();
-
         final FragmentTransaction ft = fm.beginTransaction ();
         ft.add (android.R.id.custom, new DangerousFragment (), DANGER_FRAGMENT);
         ft.addToBackStack (DANGER_FRAGMENT);
